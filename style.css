@@ -41,7 +41,7 @@
 }
 
 .cards-back-visibility-hidden{
-    position:fixed;
+    position:absolute;
    transform: rotateY(180deg);
    backface-visibility: hidden;
    transition: 1s;
@@ -62,7 +62,7 @@
 }
 
 .cards-front-visibility-hidden{
-   position: fixed;
+   position: absolute;
    transform: rotateY(180deg);
    backface-visibility: hidden;
    transition: 1s;
