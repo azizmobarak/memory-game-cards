@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="row">
+        <h3 id='message'></h3>
+        <button onclick="onRefrech()">Refrech</button>
+    </div>
+    
+    <div id='root'>
+
+    </div>
+
+
+<script>
+
+    let frontIDs = [];
+    let backIDs = [];
+    var imageIds = [];
+    let cases = [];
+    let nums = [1,2,3]
+        
+    // create divs using pure JS code
+    const gameData = [
+        { key: 1, url: './assets/image1.png' },
+        { key: 2, url: './assets/image2.png' },
+        { key: 3, url: './assets/image3.png' },
+    ]
+
+    const checkReapetition = (index) => {
+       const filtred = imageInserted.filter(value => value === index);
+       return filtred.length;
+    }
+
+    var usedImages = [];
+
+    const setImageId = (num) => num;
+
+    var root  = document.getElementById('root');
+    [0, 1, 2].forEach(value => {
+
+              // create row
+              let row = document.createElement('div');
+              row.classList.add('row');
+
+              [1, 2].forEach(index => {
+                   const random = parseInt(Math.random() * 100);
+
+                  // create card
+                  let backDiv = document.createElement('div')
+                  backDiv.classList.add('cards','cards-back-visibility-hidden');
+                  backDiv.id = 'card-b-' + random;
+                  backIDs.push('card-b-' + random);
+
+                  let frontDiv = document.createElement('div')
+                  frontDiv.classList.add('cards', 'cards-front-visibility-visible');
+                  frontDiv.id = 'card-f-' + random;
+                  frontIDs.push('card-f-' + random);
+
+                  // creat image
+                  var img = document.createElement('img');
+
+                    let randIndex;
+                  if (usedImages.length < gameData.length) {
+                      do {
+                          randIndex = Math.floor(Math.random() * gameData.length);
+                      } while (usedImages.includes(randIndex));
+                      usedImages.push(randIndex);
+                      img.src = gameData[randIndex].url;
+                      img.id = 'card-i-' + gameData[randIndex].key;
+                      imageIds.push('card-i-' + gameData[randIndex].key);
+                  } else {
+                      [0,1,2].forEach(index=>{
+                          if (usedImages.filter(value => value === index).length < 2) {
+                              img.src = gameData[index].url;
+                              console.log('here created',gameData[index].url)
+                              usedImages.push(index);
+                              img.id = 'card-i-' + gameData[index].key;
+                              imageIds.push('card-i-' + gameData[index].key);
+                          }
+                      })
+                  }
+                  
+                 
+                  
+                  img.classList.add('card-image')
+                  img.width = 100;
+                  img.height = 100;
+
+                  // create symbole
+                  var symbole  = document.createElement('p');
+                  symbole.innerText = '?'
+                  symbole.className = 'symbol'
+
+                  // append img to card div
+                  backDiv.appendChild(img);
+                  frontDiv.appendChild(symbole);
+
+                  //append to row
+                  row.appendChild(backDiv)
+                  row.appendChild(frontDiv);
+
+                  // append card with content
+                  root.appendChild(row);
+
+              })
+
+        });
+    
+
+
+let openedImages = [];
+
+const getIDNumber = (id, imageIds) => id.split('-')[2]
+// handle card click
+function onCardClickhandler(front,back){
+    
+    const cardFront = document.getElementById(front);
+    const imageID = document.querySelector('#' + backIDs[back]+'>img').id;
+    const cardBack = document.getElementById(backIDs[back]);
+
+    cardFront.addEventListener('click',()=> {
+        cardFront.classList.add('cards-front-visibility-hidden')
+        cardFront.classList.remove('cards-front-visibility-visible')
+        cardBack.classList.add('cards-back-visibility-visible')
+        cardBack.classList.remove('cards-back-visibility-hidden')
+        openedImages.push(imageID)
+        console.log(openedImages)
+        setCardBack(openedImages, cardBack, cardFront)
+    });
+
+}
+
+const setCardBack = (openedImages, cardBack, cardFront) => {
+    var l = openedImages.length;
+    console.log(l, openedImages)
+   if(l!==1){
+       console.log(openedImages[l - 1] , openedImages[l - 2]);
+       if (getIDNumber(openedImages[0]) === getIDNumber(openedImages[l - 1])) {
+           document.getElementById('message').innerText = 'Bingo! you won!';
+           document.getElementById('message').style.color = 'green';
+       } else {
+          setTimeout(() => {
+              cardBack.classList.add('cards-back-visibility-hidden')
+              cardBack.classList.remove('cards-back-visibility-visible')
+              cardFront.classList.add('cards-front-visibility-visible')
+              cardFront.classList.remove('cards-front-visibility-hidden')
+          },2000);
+       }
+   }
+}
+
+if(document.readyState=="loading"){
+    frontIDs.forEach((id,index)=>{
+        onCardClickhandler(id,index);
+    })
+}
+
+
+function onRefrech(){
+    window.location.reload();
+}
+
+
+</script>
+</body>
+</html>
