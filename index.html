@@ -11,7 +11,27 @@
 
     <div class="row">
         <h3 id='message'></h3>
-        <button onclick="onRefrech()">Refrech</button>
+        <div class="button-container">
+            <button onclick="onRefrech()">Refrech</button>
+            <button onclick="restartTheGame()">start the game again</button>
+        </div>
+    </div>
+
+    <div class="row">
+       <table class="table-score">
+           <thead>
+               <tr>
+                   <td>Game</td>
+                   <td>Score</td>
+               </tr>
+           </thead>
+           <tbody>
+               <tr>
+                   <td>Memory</td>
+                   <td><h4 id='score'>0</h4></td>
+               </tr>
+           </tbody>
+       </table>
     </div>
     
     <div id='root'>

@@ -1,8 +1,8 @@
  let frontIDs = [];
-    let backIDs = [];
-    var imageIds = [];
-    let cases = [];
-    let nums = [1,2,3]
+ let backIDs = [];
+ var imageIds = [];
+ let cases = [];
+ let score = 0;
         
     const gameData = [
         { key: 1, url: './assets/image1.png' },
@@ -13,7 +13,12 @@
     var usedImages = [];
 
     var root  = document.getElementById('root');
-    [0, 1, 2].forEach(value => {
+    
+
+
+function createCards (){
+        localStorage.setItem('score', 0);
+        [0, 1, 2].forEach(value => {
 
               // create row
               let row = document.createElement('div');
@@ -47,13 +52,19 @@
                       img.id = 'card-i-' + gameData[randIndex].key;
                       imageIds.push('card-i-' + gameData[randIndex].key);
                   } else {
-                      [0,1,2].forEach(index=>{
-                          if (usedImages.filter(value => value === index).length < 2) {
-                              img.src = gameData[index].url;
-                              console.log('here created',gameData[index].url)
-                              usedImages.push(index);
-                              img.id = 'card-i-' + gameData[index].key;
-                              imageIds.push('card-i-' + gameData[index].key);
+                      // generate random array for the rest images
+                      let newIndex =[];
+                      [1,2,3,4].forEach(index=>{
+                          randIndex = Math.floor(Math.random() * gameData.length);
+                          newIndex.push(randIndex);
+                      })
+                      // use array to add last images
+                      newIndex.forEach(i=>{
+                          if (usedImages.filter(d => d == i).length < 4) {
+                              img.src = gameData[i].url;
+                              usedImages.push(i);
+                              img.id = 'card-i-' + gameData[i].key;
+                              imageIds.push('card-i-' + gameData[i].key);
                           }
                       })
                   }
@@ -84,10 +95,15 @@
               })
 
         });
+    }
     
 
 
 let openedImages = [];
+// front cards
+let openedCards = [];
+// back cards
+let visibleCards = [];
 
 
 // when clicking on the front of the card
@@ -97,14 +113,23 @@ function onCardClickhandler(front,back){
     const imageID = document.querySelector('#' + backIDs[back]+'>img').id;
     const cardBack = document.getElementById(backIDs[back]);
 
-    cardFront.addEventListener('click',()=> {
+    cardFront.addEventListener('click',(e)=> {
+
         cardFront.classList.add('cards-front-visibility-hidden')
         cardFront.classList.remove('cards-front-visibility-visible')
         cardBack.classList.add('cards-back-visibility-visible')
         cardBack.classList.remove('cards-back-visibility-hidden')
+        cardBack.style.animationName = 'cardAnimation';
+
+        // affect animation to current card
+        cardBack.style.animationDuration = '3s';
+        cardFront.style.animationName = 'cardAnimation';
+        cardFront.style.animationDuration = '3s';
+        // push to IDs arrays
         openedImages.push(imageID)
-        console.log(openedImages)
-        setCardBack(openedImages, cardBack, cardFront)
+        openedCards.push(front)
+        visibleCards.push(backIDs[back])
+        setCardBack(openedImages, cardBack, cardFront,openedCards,visibleCards)
     });
 
 }
@@ -113,25 +138,37 @@ function onCardClickhandler(front,back){
 const getIDNumber = (id, imageIds) => id.split('-')[2]
 
 // change to back and check if the image is the same using the ID and key of image
-const setCardBack = (openedImages, cardBack, cardFront) => {
-    var l = openedImages.length;
-   if(l!==1){
-       if (getIDNumber(openedImages[0]) === getIDNumber(openedImages[l - 1])) {
-           document.getElementById('message').innerText = 'Bingo! you won!';
-           document.getElementById('message').style.color = 'green';
+const setCardBack = (openedImages, cardBack, cardFront,openedCards,visibleCards) => {
+    console.log('cards',openedCards,visibleCards)
+    var length = openedImages.length;
+   if(length!==1){
+       if (getIDNumber(openedImages[0]) === getIDNumber(openedImages[length - 1])) {
+            calculateScoreAndShowMessage();
        } else {
           setTimeout(() => {
               cardBack.classList.add('cards-back-visibility-hidden')
               cardBack.classList.remove('cards-back-visibility-visible')
               cardFront.classList.add('cards-front-visibility-visible')
               cardFront.classList.remove('cards-front-visibility-hidden')
-          },2000);
+            },1000);
        }
    }
 }
 
+function calculateScoreAndShowMessage (){
+    document.getElementById('message').innerText = 'Bingo! you won!';
+           document.getElementById('message').style.color = 'green';
+            let result = localStorage.getItem('score');
+            localStorage.setItem('score', result ++);
+
+            setTimeout(() => {
+                document.getElementById('score').innerText = 'scrore:' + (parseInt(result) + 1)
+            }, 200);
+}
+
 // bind handlers
 if(document.readyState=="loading"){
+    createCards();
     frontIDs.forEach((id,index)=>{
         onCardClickhandler(id,index);
     })
@@ -140,5 +177,36 @@ if(document.readyState=="loading"){
 
 function onRefrech(){
     window.location.reload();
+}
+
+// recreate all rows
+function restartTheGame (){
+    document.getElementById('message').innerText = '';
+
+     const firstOpenedCard  = document.getElementById(openedCards[0])
+     const lastOpenedCard  = document.getElementById(openedCards[openedCards.length-1])
+     const firstOpenedCardBack  = document.getElementById(visibleCards[0])
+     const lastOpenedCardBack  = document.getElementById(visibleCards[visibleCards.length-1])
+
+         firstOpenedCardBack.classList.add('cards-back-visibility-hidden')
+         firstOpenedCardBack.classList.remove('cards-back-visibility-visible')
+         firstOpenedCard.classList.add('cards-front-visibility-visible')
+          firstOpenedCard.classList.remove('cards-front-visibility-hidden')
+
+          lastOpenedCardBack.classList.add('cards-back-visibility-hidden')
+         lastOpenedCardBack.classList.remove('cards-back-visibility-visible')
+         lastOpenedCard.classList.add('cards-front-visibility-visible')
+          lastOpenedCard.classList.remove('cards-front-visibility-hidden')
+
+          openedImages.forEach(_i=>{
+              openedImages.pop();
+          })
+          openedCards.forEach(_i=>{
+              openedImages.pop();
+          })
+          visibleCards.forEach(_i=>{
+              openedImages.pop();
+          })
+           localStorage.setItem('score', 0);
 }
 
