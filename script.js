@@ -5,12 +5,12 @@
  let score = 0;
         
     const gameData = [
-        { key: 1, url: '../assets/image1.png' },
-        { key: 2, url: '../assets/image2.png' },
-        { key: 3, url: '../assets/image3.png' },
-         { key: 1, url: '../assets/image1.png' },
-        { key: 2, url: '../assets/image2.png' },
-        { key: 3, url: '../assets/image3.png' },
+        { key: 1, url: './assets/image1.png' },
+        { key: 2, url: './assets/image2.png' },
+        { key: 3, url: './assets/image3.png' },
+         { key: 1, url: './assets/image1.png' },
+        { key: 2, url: './assets/image2.png' },
+        { key: 3, url: './assets/image3.png' },
     ]
 
     var usedImages = [];
