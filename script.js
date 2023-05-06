@@ -5,9 +5,12 @@
  let score = 0;
         
     const gameData = [
-        { key: 1, url: './assets/image1.png' },
-        { key: 2, url: './assets/image2.png' },
-        { key: 3, url: './assets/image3.png' },
+        { key: 1, url: '../assets/image1.png' },
+        { key: 2, url: '../assets/image2.png' },
+        { key: 3, url: '../assets/image3.png' },
+         { key: 1, url: '../assets/image1.png' },
+        { key: 2, url: '../assets/image2.png' },
+        { key: 3, url: '../assets/image3.png' },
     ]
 
     var usedImages = [];
@@ -41,34 +44,6 @@ function createCards (){
 
                   // creat images
                   var img = document.createElement('img');
-
-                  let randIndex;
-                  if (usedImages.length < gameData.length) {
-                      do {
-                          randIndex = Math.floor(Math.random() * gameData.length);
-                      } while (usedImages.includes(randIndex));
-                      usedImages.push(randIndex);
-                      img.src = gameData[randIndex].url;
-                      img.id = 'card-i-' + gameData[randIndex].key;
-                      imageIds.push('card-i-' + gameData[randIndex].key);
-                  } else {
-                      // generate random array for the rest images
-                      let newIndex =[];
-                      [1,2,3,4].forEach(index=>{
-                          randIndex = Math.floor(Math.random() * gameData.length);
-                          newIndex.push(randIndex);
-                      })
-                      // use array to add last images
-                      newIndex.forEach(i=>{
-                          if (usedImages.filter(d => d == i).length < 4) {
-                              img.src = gameData[i].url;
-                              usedImages.push(i);
-                              img.id = 'card-i-' + gameData[i].key;
-                              imageIds.push('card-i-' + gameData[i].key);
-                          }
-                      })
-                  }
-                  
                  
                   
                   img.classList.add('card-image')
@@ -96,6 +71,36 @@ function createCards (){
 
         });
     }
+
+    
+    
+function generateImages () {
+    const imgs = document.querySelectorAll('img');
+    // console.log(shuffle(gameData)[i])
+    const arr = shuffle(gameData);
+    imgs.forEach((img, i) => {
+            img.src = arr[i].url;
+            img.id = 'card-i-' + arr[i].key;
+            imageIds.push('card-i-' + arr[i].key);
+        })
+}
+// random array
+function shuffle (images){
+          let currentIndex = images.length;
+         let randomIndex;
+         // While there remain elements to shuffle.
+         while (currentIndex != 0) {
+             // Pick a remaining element.
+             randomIndex = Math.floor(Math.random() * currentIndex);
+             currentIndex--;
+
+             // And swap it with the current element.
+                 [images[currentIndex], images[randomIndex]] =
+                 [images[randomIndex], images[currentIndex]];
+         }
+         return images;
+}
+                 
     
 
 
@@ -169,6 +174,7 @@ function calculateScoreAndShowMessage (){
 // bind handlers
 if(document.readyState=="loading"){
     createCards();
+    generateImages();
     frontIDs.forEach((id,index)=>{
         onCardClickhandler(id,index);
     })
