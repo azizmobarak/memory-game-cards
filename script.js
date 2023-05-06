@@ -1,7 +1,6 @@
  let frontIDs = [];
  let backIDs = [];
  var imageIds = [];
- let cases = [];
  let score = 0;
         
     const gameData = [
@@ -88,13 +87,10 @@ function generateImages () {
 function shuffle (images){
           let currentIndex = images.length;
          let randomIndex;
-         // While there remain elements to shuffle.
          while (currentIndex != 0) {
-             // Pick a remaining element.
              randomIndex = Math.floor(Math.random() * currentIndex);
              currentIndex--;
 
-             // And swap it with the current element.
                  [images[currentIndex], images[randomIndex]] =
                  [images[randomIndex], images[currentIndex]];
          }
