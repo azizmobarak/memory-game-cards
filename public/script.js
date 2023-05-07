@@ -2,24 +2,26 @@
  let backIDs = [];
  var imageIds = [];
  let score = 0;
+ var usedImages = [];
+ var root  = document.getElementById('root');
+ let openedImages = [];
+// front cards
+ let openedCards = [];
+// back cards
+ let visibleCards = [];
         
-    const gameData = [
+const gameData = [
         { key: 1, url: './assets/image1.png' },
         { key: 2, url: './assets/image2.png' },
         { key: 3, url: './assets/image3.png' },
          { key: 1, url: './assets/image1.png' },
         { key: 2, url: './assets/image2.png' },
         { key: 3, url: './assets/image3.png' },
-    ]
-
-    var usedImages = [];
-
-    var root  = document.getElementById('root');
+]
     
 
 
 function createCards (){
-        localStorage.setItem('score', 0);
         [0, 1, 2].forEach(value => {
 
               // create row
@@ -96,15 +98,7 @@ function shuffle (images){
          }
          return images;
 }
-                 
-    
-
-
-let openedImages = [];
-// front cards
-let openedCards = [];
-// back cards
-let visibleCards = [];
+        
 
 
 // when clicking on the front of the card
@@ -157,13 +151,11 @@ const setCardBack = (openedImages, cardBack, cardFront,openedCards,visibleCards)
 }
 
 function calculateScoreAndShowMessage (){
-    document.getElementById('message').innerText = 'Bingo! you won!';
+           document.getElementById('message').innerText = 'Bingo! you won!';
            document.getElementById('message').style.color = 'green';
-            let result = localStorage.getItem('score');
-            localStorage.setItem('score', result ++);
 
             setTimeout(() => {
-                document.getElementById('score').innerText = 'scrore:' + (parseInt(result) + 1)
+                document.getElementById('score').innerText = ++score;
             }, 200);
 }
 
@@ -209,6 +201,5 @@ function restartTheGame (){
           visibleCards.forEach(_i=>{
               openedImages.pop();
           })
-           localStorage.setItem('score', 0);
 }
 
